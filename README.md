@@ -24,9 +24,7 @@ The [btc-tx-enabled-nft.clar](/examples/btc-tx-enabled-nft/contracts/btc-tx-enab
 
 - `mint (..)` function dives into how an NFT can only be minted if a specific provided bitcoin transaction has been mined on the Bitcoin blockchain. The `mint` function requires the params of a receipient address, bitcoin block height of bitcoin transaction, the bitcoin transaction hex, the block header, and data from the bitcoin transaction's merkle proof. For more information on how to get this data for a particular bitcoin transaction, refer to the link in the Resources and Inspiration section below.
 
-To add new contracts, follow detailed instructions at [Add new Contract](https://docs.hiro.so/clarinet/how-to-guides/how-to-add-contract).
-
-> **NOTE**: To use this example with Clarinet inside [Hiro Platform](https://platform.hiro.so), you can open the terminal session inside VS code by navigating to File -> View -> Terminal.
+To add a new contract, use [Clarinet](https://docs.hiro.so/stacks/clarinet).
 
 ## Resources and Inspiration
 
