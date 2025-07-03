@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "vitest";
 
-const accounts = simnet.getAccounts()
-const address1 = accounts.get("wallet_1")!
+// const accounts = simnet.getAccounts();
+// const address1 = accounts.get("wallet_1")!;
 
 /*
   The test below is an example. To learn more, read the testing documentation here:
@@ -10,6 +10,6 @@ const address1 = accounts.get("wallet_1")!
 
 describe("example tests", () => {
   it("ensures simnet is well initalised", () => {
-    expect(simnet.blockHeight).toBeDefined()
-  })
-})
+    expect(simnet.blockHeight).toBeDefined();
+  });
+});

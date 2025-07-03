@@ -22,46 +22,62 @@
 
 ;; SIP-009 function: Get the last minted token ID.
 (define-read-only (get-last-token-id)
-    (ok (var-get last-token-id))
+  (ok (var-get last-token-id))
 )
 
 ;; SIP-009 function: Get link where token metadata is hosted
 (define-read-only (get-token-uri (token-id uint))
-    (ok (some (var-get base-uri)))
+  (ok (some (var-get base-uri)))
 )
 
 ;; SIP-009 function: Get the owner of a given token
 (define-read-only (get-owner (token-id uint))
-    (ok (nft-get-owner? Your-NFT-Name token-id))
+  (ok (nft-get-owner? Your-NFT-Name token-id))
 )
 
 ;; SIP-009 function: Transfer NFT token to another owner.
-(define-public (transfer (token-id uint) (sender principal) (recipient principal))
-    (begin
-        ;; #[filter(sender)]
-        (asserts! (is-eq tx-sender sender) err-not-token-owner)
-        (nft-transfer? Your-NFT-Name token-id sender recipient)
-    )
+(define-public (transfer
+    (token-id uint)
+    (sender principal)
+    (recipient principal)
+  )
+  (begin
+    ;; #[filter(sender)]
+    (asserts! (is-eq tx-sender sender) err-not-token-owner)
+    (nft-transfer? Your-NFT-Name token-id sender recipient)
+  )
 )
 
 ;; Mint a new NFT if a specific bitcoin transaction has been mined.
-(define-public (mint (recipient principal) (height uint) (tx (buff 1024)) (header (buff 80)) (proof { tx-index: uint, hashes: (list 14 (buff 32)), tree-depth: uint}))
-    (let
-        (
-            ;; Create the new token ID by incrementing the last minted ID.
-            (token-id (+ (var-get last-token-id) u1))
-            ;; Calls external contract function to confirm mined status on the supplied bitcoin transaction data. Will return (ok txid)
-            (tx-was-mined (contract-call? 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.clarity-bitcoin-lib-v5 was-tx-mined-compact height tx header proof))
-        )
-        ;; Only the contract owner can mint.
-        (asserts! (is-eq tx-sender contract-owner) err-owner-only)
-        ;; Confirms if supplied bitcoin transaction data has been mined or not.
-        (asserts! (is-ok tx-was-mined) err-tx-not-mined)
-        ;; Mint the NFT and send it to the given recipient.
-        (try! (nft-mint? Your-NFT-Name token-id recipient))
-        ;; Update the last minted token ID.
-        (var-set last-token-id token-id)
-        ;; Return a success status and the newly minted NFT ID.
-        (ok token-id)
+(define-public (mint
+    (recipient principal)
+    (height uint)
+    (tx (buff 1024))
+    (header (buff 80))
+    (proof {
+      tx-index: uint,
+      hashes: (list 14 (buff 32)),
+      tree-depth: uint,
+    })
+  )
+  (let (
+      ;; Create the new token ID by incrementing the last minted ID.
+      (token-id (+ (var-get last-token-id) u1))
+      ;; Calls external contract function to confirm mined status on the supplied bitcoin transaction data. Will return (ok txid)
+      (tx-was-mined (contract-call?
+        'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.clarity-bitcoin-lib-v5
+        was-tx-mined-compact height tx header proof
+      ))
     )
+    ;; Only the contract owner can mint.
+    (asserts! (is-eq tx-sender contract-owner) err-owner-only)
+    ;; Confirms if supplied bitcoin transaction data has been mined or not.
+    (asserts! (is-ok tx-was-mined) err-tx-not-mined)
+    ;; Mint the NFT and send it to the given recipient.
+    (try! (nft-mint? Your-NFT-Name token-id recipient))
+    ;; Update the last minted token ID.
+    (var-set last-token-id token-id)
+    ;; Return a success status and the newly minted NFT ID.
+    (ok token-id)
+  )
 )
