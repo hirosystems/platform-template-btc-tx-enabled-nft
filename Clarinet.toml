@@ -13,5 +13,5 @@ contract_id = 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.clarity-bitcoin-lib-v5'
 
 [contracts.btc-tx-enabled-nft]
 path = 'contracts/btc-tx-enabled-nft.clar'
-clarity_version = 3
-epoch = 3.0
+clarity_version = 4
+epoch = "latest"
